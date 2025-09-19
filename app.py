@@ -68,7 +68,7 @@ def generate_response_template(priority, emotions):
 model, tokenizer, mlb, emotion_names = load_model_and_artifacts()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
-lottie_url = "https://assets3.lottiefiles.com/packages/lf20_d2jD1d.json"
+lottie_url = "https://assets8.lottiefiles.com/packages/lf20_zrqthn4q.json"
 lottie_animation = load_lottieurl(lottie_url)
 
 # --- USER INTERFACE ---
@@ -90,7 +90,7 @@ with col1:
 
 # Right Column (Main Content)
 with col2:
-    st.title("🧠 Smart Review Analyzer")
+    st.title("✨ Smart Review Analyzer")
     st.markdown("Enter a user review to automatically analyze its emotions, determine its priority, and get a suggested response.")
     user_input = st.text_area(
         "User Review", 
