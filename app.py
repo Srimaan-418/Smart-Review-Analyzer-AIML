@@ -9,7 +9,7 @@ from transformers import DistilBertTokenizerFast, DistilBertForSequenceClassific
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
     page_title="Smart Review Analyzer",
-    page_icon="🧠",
+    page_icon="✨",
     layout="wide"
 )
 
@@ -68,7 +68,7 @@ def generate_response_template(priority, emotions):
 model, tokenizer, mlb, emotion_names = load_model_and_artifacts()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
-lottie_url = "https://assets9.lottiefiles.com/packages/lf20_v92o72md.json"
+lottie_url = "https://assets3.lottiefiles.com/packages/lf20_d2jD1d.json"
 lottie_animation = load_lottieurl(lottie_url)
 
 # --- USER INTERFACE ---
