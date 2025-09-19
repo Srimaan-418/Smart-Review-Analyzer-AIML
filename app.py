@@ -68,7 +68,7 @@ def generate_response_template(priority, emotions):
 model, tokenizer, mlb, emotion_names = load_model_and_artifacts()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
-lottie_url = "https://assets8.lottiefiles.com/packages/lf20_zrqthn4q.json"
+lottie_url = "https://assets3.lottiefiles.com/packages/lf20_d2jD1d.json"
 lottie_animation = load_lottieurl(lottie_url)
 
 # --- USER INTERFACE ---
@@ -78,6 +78,10 @@ with st.sidebar:
     st.title("About the Project")
     st.markdown("This app is a proof-of-concept for the **Smart Review Analyzer** project.")
     st.markdown("It uses a fine-tuned DistilBERT model to perform multi-label emotion classification, prioritizes feedback, and suggests responses.")
+    st.markdown("---")
+    st.markdown("By:- Karishma Suthar 2420030384")
+    st.markdown(" Bhavya Sai Sri 2420030594")
+    st.markdown(" K.Srimaan Kameshwar 2420030418")
     st.markdown("---")
 
 # Main Page Layout with Columns
