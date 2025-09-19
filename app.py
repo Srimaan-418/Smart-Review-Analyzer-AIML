@@ -2,19 +2,30 @@ import streamlit as st
 import torch
 import joblib
 import pandas as pd
+import requests
+from streamlit_lottie import st_lottie
 from transformers import DistilBertTokenizerFast, DistilBertForSequenceClassification
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
     page_title="Smart Review Analyzer",
     page_icon="🧠",
-    layout="centered"
+    layout="wide"
 )
 
-# --- LOAD MODELS AND ARTIFACTS ---
+# --- HELPER FUNCTIONS ---
+
+@st.cache_data
+def load_lottieurl(url: str):
+    """Loads a Lottie animation from a URL."""
+    r = requests.get(url)
+    if r.status_code != 200:
+        return None
+    return r.json()
+
 @st.cache_resource
 def load_model_and_artifacts():
-    """Load all necessary model files and artifacts."""
+    """Loads all necessary model files and artifacts."""
     model = DistilBertForSequenceClassification.from_pretrained('./final_model')
     tokenizer = DistilBertTokenizerFast.from_pretrained('./final_model')
     mlb = joblib.load('mlb.pkl')
@@ -22,11 +33,6 @@ def load_model_and_artifacts():
         emotion_names = [line.strip() for line in f.readlines()]
     return model, tokenizer, mlb, emotion_names
 
-model, tokenizer, mlb, emotion_names = load_model_and_artifacts()
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model.to(device)
-
-# --- HELPER FUNCTIONS ---
 def prioritize_review(probabilities, names_list):
     """Applies rules to flag reviews based on detected emotions."""
     try:
@@ -58,13 +64,32 @@ def generate_response_template(priority, emotions):
     else:
         return "Thank you for your feedback. We appreciate you sharing your thoughts with us."
 
+# --- LOAD EVERYTHING ---
+model, tokenizer, mlb, emotion_names = load_model_and_artifacts()
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
+lottie_url = "https://assets9.lottiefiles.com/packages/lf20_v92o72md.json"
+lottie_animation = load_lottieurl(lottie_url)
+
 # --- USER INTERFACE ---
+
+# Sidebar
+with st.sidebar:
+    st.title("About the Project")
+    if lottie_animation:
+        st_lottie(lottie_animation, height=250, key="sidebar_robot")
+    st.markdown("This app is a proof-of-concept for the **Smart Review Analyzer** project. It uses a fine-tuned DistilBERT model to perform multi-label emotion classification on user feedback, prioritizes it, and suggests a response.")
+    st.markdown("---")
+    st.markdown("Developed by Team [Your Names Here]")
+
+
+# Main Page
 st.title("🧠 Smart Review Analyzer")
-st.markdown("Enter a user review to automatically analyze its emotions, determine its priority, and get a suggested response.")
+st.markdown("Enter a user review below to automatically analyze its emotions, determine its priority, and get a suggested response.")
 
 user_input = st.text_area("User Review", "This is the best product I have ever used! Highly recommended.", height=150)
 
-if st.button("Analyze"):
+if st.button("Analyze Review"):
     if user_input:
         with st.spinner('Analyzing...'):
             # 1. Prediction
@@ -85,6 +110,7 @@ if st.button("Analyze"):
             response = generate_response_template(priority, predicted_emotion_names)
 
             # Display Results
+            st.markdown("---")
             st.subheader("Analysis Results")
             col1, col2 = st.columns(2)
             with col1:
