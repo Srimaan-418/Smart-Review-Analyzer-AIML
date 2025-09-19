@@ -73,23 +73,36 @@ lottie_animation = load_lottieurl(lottie_url)
 
 # --- USER INTERFACE ---
 
-# Sidebar
+# Sidebar for extra information
 with st.sidebar:
     st.title("About the Project")
-    if lottie_animation:
-        st_lottie(lottie_animation, height=250, key="sidebar_robot")
-    st.markdown("This app is a proof-of-concept for the **Smart Review Analyzer** project. It uses a fine-tuned DistilBERT model to perform multi-label emotion classification on user feedback, prioritizes it, and suggests a response.")
+    st.markdown("This app is a proof-of-concept for the **Smart Review Analyzer** project.")
+    st.markdown("It uses a fine-tuned DistilBERT model to perform multi-label emotion classification, prioritizes feedback, and suggests responses.")
     st.markdown("---")
-    st.markdown("Developed by Team [Your Names Here]")
 
+# Main Page Layout with Columns
+col1, col2 = st.columns([1, 2]) # The second column is twice as wide
 
-# Main Page
-st.title("🧠 Smart Review Analyzer")
-st.markdown("Enter a user review below to automatically analyze its emotions, determine its priority, and get a suggested response.")
+# Left Column (Animation)
+with col1:
+    if lottie_animation:
+        st_lottie(lottie_animation, height=300, key="homepage_robot")
 
-user_input = st.text_area("User Review", "This is the best product I have ever used! Highly recommended.", height=150)
+# Right Column (Main Content)
+with col2:
+    st.title("🧠 Smart Review Analyzer")
+    st.markdown("Enter a user review to automatically analyze its emotions, determine its priority, and get a suggested response.")
+    user_input = st.text_area(
+        "User Review", 
+        "This is the best product I have ever used! Highly recommended.", 
+        height=150,
+        label_visibility="collapsed" # Hides the label for a cleaner look
+    )
 
-if st.button("Analyze Review"):
+analyze_button = st.button("Analyze Review")
+
+# Results Section (appears below columns after button press)
+if analyze_button:
     if user_input:
         with st.spinner('Analyzing...'):
             # 1. Prediction
@@ -112,10 +125,10 @@ if st.button("Analyze Review"):
             # Display Results
             st.markdown("---")
             st.subheader("Analysis Results")
-            col1, col2 = st.columns(2)
-            with col1:
+            res_col1, res_col2 = st.columns(2)
+            with res_col1:
                 st.metric("Priority", priority)
-            with col2:
+            with res_col2:
                 st.write("**Detected Emotions:**")
                 if predicted_emotion_names:
                     st.success(' '.join(f'`{name}`' for name in predicted_emotion_names))
